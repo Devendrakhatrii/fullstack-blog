@@ -160,3 +160,12 @@ const serive = new Service();
 
 export default serive;
 ```
+# Day 3
+
+## Redux toolkit
+
+- configureStore
+- createSlice
+- created authSlice with reducers login & logout
+- useDispatch, dispatch login an logout
+- loading component,
