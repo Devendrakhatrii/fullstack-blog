@@ -169,3 +169,8 @@ export default serive;
 - created authSlice with reducers login & logout
 - useDispatch, dispatch login an logout
 - loading component,
+
+# Day 3
+
+- logout button
+- header navbar
