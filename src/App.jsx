@@ -24,7 +24,7 @@ function App() {
   return !loading ? (
     <>
       <Header />
-      <main></main>
+      <main>Hello</main>
       <Footer />
     </>
   ) : (

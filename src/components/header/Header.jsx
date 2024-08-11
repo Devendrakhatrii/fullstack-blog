@@ -4,10 +4,10 @@ import LogoutBtn from "../LogoutBtn";
 const Header = () => {
   const authStatus = useSelector((state) => state.status);
   const navItems = [
-    { name: "Home", active: status, slug: "/" },
-    { name: "Blogs", active: status, slug: "/blogs" },
-    { name: "Login", active: !status, slug: "/login" },
-    { name: "Sign Up", active: !status, slug: "/sign-up" },
+    { name: "Home", active: authStatus, slug: "/" },
+    { name: "Blogs", active: authStatus, slug: "/blogs" },
+    { name: "Login", active: !authStatus, slug: "/login" },
+    { name: "Sign Up", active: !authStatus, slug: "/sign-up" },
   ];
   return (
     <nav>
