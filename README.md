@@ -174,3 +174,12 @@ export default serive;
 
 - logout button
 - header navbar
+- added more components
+
+#  Day 4
+
+## React Hook Form
+
+- get to know about hook form
+- setup
+-

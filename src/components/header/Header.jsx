@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import LogoutBtn from "../LogoutBtn";
 const Header = () => {
-  // const status = useSelector((state) => state.status);
-  const status = true;
+  const authStatus = useSelector((state) => state.status);
   const navItems = [
     { name: "Home", active: status, slug: "/" },
     { name: "Blogs", active: status, slug: "/blogs" },
@@ -14,7 +15,16 @@ const Header = () => {
         <h1>Logo</h1>
         <ul>
           {navItems.map((item, index) =>
-            item.active ? <li key={index}>{item.name}</li> : null
+            item.active ? (
+              <li key={index}>
+                <Link to={item.slug}>{item.name}</Link>
+              </li>
+            ) : null
+          )}
+          {authStatus && (
+            <li>
+              <LogoutBtn />
+            </li>
           )}
         </ul>
       </div>
