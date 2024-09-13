@@ -5,31 +5,31 @@ import { login, logout } from "./slices/authSlice";
 import authService from "./appwrite/auth";
 import Loading from "./components/Loading";
 import { Header, Footer } from "./components";
+import { Route, Routes } from "react-router-dom";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+import AddPost from "./components/AddPost";
+import AllPosts from "./pages/AllPosts";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    authService
-      .checkCurrentUser()
-      .then((userData) => {
-        if (userData) {
-          dispatch(login(userData));
-        } else dispatch(logout());
-      })
-      .finally(() => setLoading(false));
-  }, [dispatch]);
-
-  return !loading ? (
+  return (
     <>
-      <Header />
-      <main>Hello</main>
-      <Footer />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+      <Routes>
+        <Route path="/" element={<AllPosts />} />
+        <Route path="/profile" element={<profile />} />
+        <Route path="/addPost" element={<AddPost />} />
+      </Routes>
     </>
-  ) : (
-    <Loading />
   );
+  // ) : (
+  // <Loading />
+  // );
 }
 
 export default App;

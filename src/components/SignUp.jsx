@@ -1,47 +1,67 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import authService from "../appwrite/auth";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import Input from "./Input";
-import { Button } from "@chakra-ui/react";
+  import {
+    Button,
+    ButtonGroup,
+    Card,
+    CardBody,
+    CardFooter,
+    Divider,
+  } from "@chakra-ui/react";
 
 const SignUp = () => {
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const { register, handleSubmit } = useForm();
 
   const signUp = async (data) => {
     try {
-      setError("");
+      console.log(data);
+
       const signedUp = await authService.createAccount(data);
+      console.log(signedUp);
       if (signedUp) navigate("/login");
     } catch (error) {
-      setError(error.message);
+      console.log(error);
     }
   };
   return (
-    <div>
-      <form onSubmit={handleSubmit(signUp)}>
-        <Input
-          label="Name"
-          {...register("name", { required: true })}
-        />
-        <Input
-          label="email"
-          type="email"
-          {...register("email", { required: true })}
-        />
-        <Input
-          label="Password:"
-          type="password"
-          {...register("password", { required: true })}
-        />
-        <Button type="submit">Sign Up</Button>
+    <div className="w-screen h-screen flex items-center justify-center space-y-20">
+      <Card>
+        <CardBody>
+          <form onSubmit={handleSubmit(signUp)}>
+            <Input label="Name:" {...register("name", { required: true })} />
+            <Input
+              label="Email:"
+              type="email"
+              {...register("email", { required: true })}
+            />
+            <Input
+              label="Password:"
+              type="password"
+              {...register("password", { required: true })}
+            />
+          </form>
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          <ButtonGroup spacing={"2"}>
+            <Button type="submit" variant={"solid"} colorScheme="blue">
+              Sign Up
+            </Button>
 
-        <Button>Login</Button>
-      </form>
+            <Link to={"/login"}>
+              <Button colorScheme="blue" variant={"ghost"}>
+                Login
+              </Button>
+            </Link>
+          </ButtonGroup>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
