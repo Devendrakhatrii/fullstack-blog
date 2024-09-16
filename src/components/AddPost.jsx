@@ -9,7 +9,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { Input } from "./index";
+// import { Input } from "./index";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import service from "../appwrite/database";

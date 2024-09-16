@@ -23,9 +23,9 @@ export class AuthService {
         password,
         name
       );
-      if (userAccount) {
-        return this.login({ email, password });
-      }
+      // if (userAccount) {
+      //   return this.login({ email, password });
+      // }
       return userAccount;
     } catch (error) {
       throw error;
