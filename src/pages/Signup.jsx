@@ -7,13 +7,15 @@ import { useNavigate } from "react-router-dom";
 import authService from "@/appwrite/auth";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const description =
   "A sign up form with first name, last name, email and password inside a card. There's an option to sign up with GitHub and a link to login if you already have an account";
 
 export const Signup = () => {
   const navigate = useNavigate();
-
+  const isLoggedIn = useSelector((state) => state.auth.authStatus);
   const { register, handleSubmit } = useForm();
 
   const signUp = async (data) => {
@@ -42,6 +44,10 @@ export const Signup = () => {
     }
   };
 
+  useEffect(() => {
+    isLoggedIn ? navigate("/home") : null;
+  }, [isLoggedIn, navigate]);
+
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
@@ -64,10 +70,6 @@ export const Signup = () => {
                     {...register("name", { required: true })}
                   />
                 </div>
-                {/* <div className="grid gap-2">
-                  <Label htmlFor="last-name">Last name</Label>
-                  <Input id="last-name" placeholder="Robinson" required />
-                </div> */}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>

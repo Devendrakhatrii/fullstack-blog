@@ -1,4 +1,5 @@
 import authService from "@/appwrite/auth";
+import service from "@/appwrite/database";
 import { NewPostCard } from "@/components/NewPostCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,13 +7,19 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { getPost, getPosts } from "@/slices/postSlice";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+  const posts = useSelector((state) => state.post.allPosts);
+  console.log(posts);
+
   const handleLogout = async () => {
     const logout = authService.logout();
     console.log(logout);
@@ -29,6 +36,14 @@ export const Home = () => {
       }, 2000)
     );
   };
+
+  useEffect(() => {
+    if (posts) {
+      setData(posts.documents);
+    }
+  }, [dispatch, posts]);
+
+  console.log(data);
   return (
     <div>
       <header className="sticky top-0 z-50 flex h-16 items-center justify-between  gap-4  bg-slate-50  md:px-6">
@@ -72,18 +87,10 @@ export const Home = () => {
         </nav>
       </header>
       <div className=" p-10  w-full min-h-screen flex flex-wrap items-center justify-center  gap-5 ">
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
-        <NewPostCard />
+        {data &&
+          data?.map((post, index) => {
+            return <NewPostCard post={post} key={index} />;
+          })}
       </div>
     </div>
   );

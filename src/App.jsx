@@ -1,21 +1,52 @@
 import { useEffect } from "react";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login, logout } from "./slices/authSlice";
 import authService from "./appwrite/auth";
-import Loading from "./components/Loading";
-import { Header, Footer } from "./components";
 import { Route, Routes } from "react-router-dom";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import AddPost from "./components/AddPost";
-import AllPosts from "./pages/AllPosts";
 import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { PageNotFound } from "./pages/PageNotFound";
 import { Home } from "./pages/Home";
+import Blog from "./pages/Blog";
+import service from "./appwrite/database";
+import { getPosts } from "./slices/postSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const checkUserSession = async () => {
+      try {
+        const user = await authService.checkCurrentUser();
+        console.log("Current user:", user);
+
+        if (user) {
+          dispatch(login(user));
+        } else {
+          dispatch(logout());
+        }
+      } catch (error) {
+        console.error("Error checking user session:", error);
+        dispatch(logout());
+      }
+    };
+
+    const getPost = async () => {
+      try {
+        const posts = await service.getPosts();
+        console.log(posts);
+
+        if (posts) dispatch(getPosts(posts));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkUserSession();
+    getPost();
+  }, [dispatch]);
   return (
     <>
       <Routes>
@@ -27,7 +58,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/profile" element={<Profile />} /> */}
           <Route path="/addPost" element={<AddPost />} />
-        <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/blog" element={<Blog />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

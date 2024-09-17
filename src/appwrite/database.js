@@ -13,13 +13,30 @@ export class Service {
     this.databases = new Databases(this.client);
     this.bucket = new Storage(this.client);
   }
-  async createPost({ title, slug, content, image, status, id }) {
+  async createPost({ title, name, slug, content, image, status, id }) {
     try {
+      // Log the data to check for undefined or null values
+      console.log("Creating Post with Data: ", {
+        title,
+        name,
+        slug,
+        content,
+        image,
+        status,
+        id,
+      });
+
+      // Log the database and collection IDs
+      console.log("Database ID: ", config.appwriteDatabaseId);
+      console.log("Collection ID: ", config.appwriteCollectionId);
+
       return await this.databases.createDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug,
+        ID.unique(),
         {
+          slug,
+          name,
           title,
           content,
           image,
@@ -62,12 +79,14 @@ export class Service {
       return false;
     }
   }
-  async getPost(slug) {
+  async getPost(userId) {
     try {
-      return await this.databases.getDocument(
+      console.log(userId);
+
+      return await this.databases.listDocuments(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug
+        [Query.equal("id", userId)]
       );
     } catch (error) {
       console.log("Appwrite serive :: getPost :: error", error);

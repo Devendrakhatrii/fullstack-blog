@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,18 +6,17 @@ import authService from "../appwrite/auth";
 import { LoginCircle } from "@/components/LoginCircle";
 import { useForm } from "react-hook-form";
 import { login } from "@/slices/authSlice";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 export function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
-  const [error, setError] = useState("");
+  const isLoggedIn = useSelector((state) => state.auth.authStatus);
   const loginForm = async (data) => {
     try {
-      setError("");
       const sessionPromise = authService.login(data);
 
       toast.promise(
@@ -42,9 +41,13 @@ export function Login() {
         }, 2000);
       }
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     }
   };
+
+  useEffect(() => {
+    isLoggedIn ? navigate("/home") : null;
+  }, [isLoggedIn, navigate]);
   return (
     <div className="w-full h-screen  lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
