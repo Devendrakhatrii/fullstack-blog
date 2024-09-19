@@ -1,8 +1,16 @@
 import service from "@/appwrite/database";
 import { cn } from "@/lib/utils";
-import { Pencil } from "lucide-react";
+import { Ellipsis, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function NewPostCard({ post }) {
   console.log(post);
@@ -77,8 +85,18 @@ export function NewPostCard({ post }) {
                 <p className="text-sm text-gray-400">2 min read</p>
               </div>
             </div>
-            <div className="p-3 ml-5 z-10 rounded-full hover:bg-slate-950 hover:opacity-100">
-              {enableEdit ? <Pencil color="white" /> : null}
+            <div className=" p-2 z-10 rounded-[50%]  hover:bg-black hover:opacity-30 flex items-center justify-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  {enableEdit ? <Ellipsis className="text-white" /> : null}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>My Post</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           {/* <img src={imageUrl} alt="" className="size-40 w-full bg-cover" /> */}
