@@ -15,21 +15,6 @@ export class Service {
   }
   async createPost({ title, name, slug, content, image, status, id }) {
     try {
-      // Log the data to check for undefined or null values
-      console.log("Creating Post with Data: ", {
-        title,
-        name,
-        slug,
-        content,
-        image,
-        status,
-        id,
-      });
-
-      // Log the database and collection IDs
-      console.log("Database ID: ", config.appwriteDatabaseId);
-      console.log("Collection ID: ", config.appwriteCollectionId);
-
       return await this.databases.createDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
@@ -53,8 +38,9 @@ export class Service {
       return await this.databases.updateDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug,
         {
+          slug,
+          name,
           title,
           content,
           image,
@@ -81,8 +67,6 @@ export class Service {
   }
   async getPost(userId) {
     try {
-      console.log(userId);
-
       return await this.databases.listDocuments(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,

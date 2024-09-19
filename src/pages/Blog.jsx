@@ -26,6 +26,8 @@ import service from "@/appwrite/database";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { getPost, getPosts } from "@/slices/postSlice";
+import { NewPostCard } from "@/components/NewPostCard";
+import { Card } from "@/components/ui/card";
 
 const Blog = () => {
   const { register, handleSubmit, setValue, reset, watch } = useForm({
@@ -74,94 +76,117 @@ const Blog = () => {
     });
   };
   useEffect(() => {
-    service.getPost(name).then((posts) => dispatch(getPost(posts)));
-  }, [dispatch, $id, name]);
+    service.getPost($id).then((posts) => dispatch(getPost(posts)));
+  }, [dispatch, $id]);
 
   return (
     <>
-      <Dialog className={" w-screen"}>
-        <DialogTrigger asChild>
-          <Button>Add</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <form action="" onSubmit={handleSubmit(onSubmit)}>
-            <DialogHeader>
-              <DialogTitle className={"text-center"}>Add your Blog</DialogTitle>
-              <DialogDescription className={"text-center"}>
-                Add detail about your blog.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex items-center justify-center text-center p-5 space-x-5 gap-5 flex-col ">
-              <div className="flex items-center gap-2 w-full">
-                <Label htmlFor="link" className="">
-                  Image
-                </Label>
-                <Input label="Image: " type="file" {...register("image")} />
-              </div>
-              <div className="flex items-center gap-2 w-full">
-                <Label htmlFor="link" className="">
-                  Title
-                </Label>
-                <Input
-                  label="Title: "
-                  type="text"
-                  {...register("title", { required: true })}
-                />
-              </div>
-              <div className="flex items-center gap-2 w-full">
-                <Label htmlFor="link" className="">
-                  Slug
-                </Label>
-                <Input
-                  label="Slug: "
-                  type="text"
-                  {...register("slug", { required: true })}
-                />
-              </div>
-              <div className="flex items-center gap-2 w-full">
-                <Label htmlFor="link" className="">
-                  Content
-                </Label>
-                <Textarea
-                  placeholder="your content here!"
-                  label="Content:"
-                  {...register("content", { required: true })}
-                />
-              </div>
+      <div className=" p-2 px-16 flex items-center justify-between w-full fixed z-50 ">
+        <Card className="rounded-sm p-3">
+          <h1 className="text-2xl font-semibold">
+            Posts : {posts?.documents?.length}
+          </h1>
+        </Card>
+        <Card className="rounded-sm p-3">
+          <Dialog className={" w-screen"}>
+            <DialogTrigger asChild>
+              <Button className="p-4">Add</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <form action="" onSubmit={handleSubmit(onSubmit)}>
+                <DialogHeader>
+                  <DialogTitle className={"text-center"}>
+                    Add your Blog
+                  </DialogTitle>
+                  <DialogDescription className={"text-center"}>
+                    Add detail about your blog.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex items-center justify-center text-center p-5 space-x-5 gap-5 flex-col ">
+                  <div className="flex items-center gap-2 w-full">
+                    <Label htmlFor="link" className="">
+                      Image
+                    </Label>
+                    <Input label="Image: " type="file" {...register("image")} />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <Label htmlFor="link" className="">
+                      Title
+                    </Label>
+                    <Input
+                      label="Title: "
+                      type="text"
+                      {...register("title", { required: true })}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <Label htmlFor="link" className="">
+                      Slug
+                    </Label>
+                    <Input
+                      label="Slug: "
+                      type="text"
+                      {...register("slug", { required: true })}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <Label htmlFor="link" className="">
+                      Content
+                    </Label>
+                    <Textarea
+                      placeholder="your content here!"
+                      label="Content:"
+                      {...register("content", { required: true })}
+                    />
+                  </div>
 
-              <div className="flex items-center gap-5 w-full ">
-                <Label>Status</Label>{" "}
-                <Select
-                  defaultValue={selectedStatus}
-                  onValueChange={(value) =>
-                    setValue("status", value === "true")
-                  }
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Active</SelectItem>
-                    <SelectItem value="false">inActive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter className="sm:justify-start">
-              <div className=" flex items-center justify-between  w-full p-2">
-                <DialogClose asChild>
-                  <Button type="button" variant="">
-                    Close
-                  </Button>
-                </DialogClose>
-                <Button type="submit" variant="">
-                  Submit
-                </Button>
-              </div>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+                  <div className="flex items-center gap-5 w-full ">
+                    <Label>Status</Label>{" "}
+                    <Select
+                      defaultValue={selectedStatus}
+                      onValueChange={(value) =>
+                        setValue("status", value === "true")
+                      }
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">Active</SelectItem>
+                        <SelectItem value="false">inActive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter className="sm:justify-start">
+                  <div className=" flex items-center justify-between  w-full p-2">
+                    <DialogClose asChild>
+                      <Button type="button" variant="">
+                        Close
+                      </Button>
+                    </DialogClose>
+                    <Button type="submit" variant="">
+                      Submit
+                    </Button>
+                  </div>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </Card>
+      </div>
+
+      <div className=" p-10  w-full min-h-screen flex flex-wrap items-center justify-center  gap-5 ">
+        {posts?.documents?.length > 0 ? (
+          posts?.documents?.map((post, index) => {
+            return <NewPostCard post={post} key={index} />;
+          })
+        ) : (
+          <div className="w-full  text-4xl flex items-center justify-center">
+            <h1>No Posts!</h1>
+          </div>
+        )}
+      </div>
     </>
   );
 };

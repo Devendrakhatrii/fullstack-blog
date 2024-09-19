@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { Navigate, Outlet, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, Outlet, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -11,10 +11,12 @@ import authService from "@/appwrite/auth";
 import toast from "react-hot-toast";
 
 const ProtectedRoute = ({ children }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.authStatus);
   console.log(user);
   const handleLogout = async () => {
-    const logout = authService.logout();
+    const logout = await authService.logout();
     console.log(logout);
 
     toast.promise(logout, {
@@ -22,12 +24,12 @@ const ProtectedRoute = ({ children }) => {
       success: <b>Logged out succesfully!</b>,
       error: <b>Could not logout!</b>,
     });
-    logout.then(
+    if (logout) {
       () => dispatch(logout()),
-      setTimeout(() => {
-        navigate("/");
-      }, 2000)
-    );
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+    }
   };
   return user ? (
     <>

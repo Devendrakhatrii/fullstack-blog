@@ -66,7 +66,6 @@ body {
   overflow: hidden; /* Prevents scrolling */
 }
 
-#root {
+/* #root {
   height: 100vh;
-  overflow: auto; /* Allows scrolling only when the user scrolls */
-}
+  overflow: auto; /* Allows scrolling only when the user scrolls }*/
