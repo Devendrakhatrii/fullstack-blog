@@ -37,7 +37,7 @@ const Blog = () => {
   const dispatch = useDispatch();
   const { $id, name } = useSelector((state) => state.auth?.userData);
   console.log($id, name);
-  const posts = useSelector((state) => state.post.post);
+  const posts = useSelector((state) => state.post.userPost);
   console.log(posts);
 
   const addPost = async (data) => {
@@ -75,7 +75,7 @@ const Blog = () => {
   };
   useEffect(() => {
     service.getPost(name).then((posts) => dispatch(getPost(posts)));
-  }, [dispatch, $id]);
+  }, [dispatch, $id, name]);
 
   return (
     <>

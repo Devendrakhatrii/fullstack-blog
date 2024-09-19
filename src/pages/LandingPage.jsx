@@ -1,7 +1,5 @@
-import React from "react";
 import ShimmerButton from "@/components/magicui/shimmer-button";
 import RetroGrid from "@/components/magicui/retro-grid";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
