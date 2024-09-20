@@ -13,6 +13,7 @@ import { Home } from "./pages/Home";
 import Blog from "./pages/Blog";
 import service from "./appwrite/database";
 import { getPosts } from "./slices/postSlice";
+import EditPost from "./pages/EditPost";
 
 function App() {
   const dispatch = useDispatch();
@@ -58,6 +59,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/profile" element={<Profile />} /> */}
           <Route path="/addPost" element={<AddPost />} />
+          <Route path="/editPost/:id" element={<EditPost />} />
           <Route path="/home" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
         </Route>

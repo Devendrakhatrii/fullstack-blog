@@ -24,12 +24,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import service from "@/appwrite/database";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getPost, getPosts } from "@/slices/postSlice";
 import { NewPostCard } from "@/components/NewPostCard";
 import { Card } from "@/components/ui/card";
 
 const Blog = () => {
+  const [slug, setSlug] = useState("");
   const { register, handleSubmit, setValue, reset, watch } = useForm({
     defaultValues: {
       status: "true", // "true" will select the "Active" option by default
@@ -61,6 +62,7 @@ const Blog = () => {
 
       if (post) {
         reset();
+        setSlug("");
         service.getPosts().then((posts) => dispatch(getPosts(posts)));
         service.getPost().then((posts) => dispatch(getPost(posts)));
       }
@@ -69,12 +71,20 @@ const Blog = () => {
     }
   };
   const onSubmit = (data) => {
+    console.log(data);
+
     toast.promise(addPost(data), {
       loading: "Creating post...",
       success: "Post created successfully!",
       error: "Error creating post.",
     });
   };
+
+  const createSlug = (e) => {
+    let value = e.target.value.split(" ").join("-");
+    setSlug(value);
+  };
+
   useEffect(() => {
     service.getPost($id).then((posts) => dispatch(getPost(posts)));
   }, [dispatch, $id]);
@@ -87,7 +97,7 @@ const Blog = () => {
             Posts : {posts?.documents?.length}
           </h1>
         </Card>
-        <Card className="rounded-sm p-3">
+        {/* <Card className="rounded-sm p-3">
           <Dialog className={" w-screen"}>
             <DialogTrigger asChild>
               <Button className="p-4">Add</Button>
@@ -116,7 +126,10 @@ const Blog = () => {
                     <Input
                       label="Title: "
                       type="text"
-                      {...register("title", { required: true })}
+                      {...register("title", {
+                        required: true,
+                        onChange: (e) => createSlug(e),
+                      })}
                     />
                   </div>
                   <div className="flex items-center gap-2 w-full">
@@ -126,7 +139,9 @@ const Blog = () => {
                     <Input
                       label="Slug: "
                       type="text"
-                      {...register("slug", { required: true })}
+                      value={slug}
+                      disabled
+                      {...register("slug")}
                     />
                   </div>
                   <div className="flex items-center gap-2 w-full">
@@ -165,15 +180,13 @@ const Blog = () => {
                         Close
                       </Button>
                     </DialogClose>
-                    <Button type="submit" variant="">
-                      Submit
-                    </Button>
+                    <Button type="submit">Submit</Button>
                   </div>
                 </DialogFooter>
               </form>
             </DialogContent>
           </Dialog>
-        </Card>
+        </Card> */}
       </div>
 
       <div className=" p-10  w-full min-h-screen flex flex-wrap items-center justify-center  gap-5 ">

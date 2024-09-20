@@ -33,31 +33,29 @@ export class Service {
       console.log("Appwrite serive :: createPost :: error", error);
     }
   }
-  async updatePost(slug, { title, content, image, status, id }) {
+  async updatePost(id, { title, content, image, status }) {
     try {
       return await this.databases.updateDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
+        id,
         {
-          slug,
-          name,
           title,
           content,
           image,
           status,
-          id,
         }
       );
     } catch (error) {
       console.log("Appwrite serive :: updatePost :: error", error);
     }
   }
-  async deleteDocument(slug) {
+  async deleteDocument(id) {
     try {
       await this.databases.deleteDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug
+        id
       );
       return true;
     } catch (error) {
