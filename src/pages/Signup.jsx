@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LoginCircle } from "@/components/LoginCircle";
 import { useNavigate } from "react-router-dom";
 import authService from "@/appwrite/auth";
 import { useForm } from "react-hook-form";
@@ -49,64 +48,59 @@ export const Signup = () => {
   }, [isLoggedIn, navigate]);
 
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-6">
-          <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Sign Up</h1>
-            <p className="text-balance text-muted-foreground">
-              Enter your information to create an account
-            </p>
-          </div>
-          <form action="" onSubmit={handleSubmit(signUp)}>
-            <div className="grid gap-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Ram Bahadur Basnet"
-                    required
-                    {...register("name", { required: true })}
-                  />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  {...register("email", { required: true })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password", { required: true })}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Create an account
-              </Button>
-              <Button variant="outline" className="w-full">
-                Sign up with Google
-              </Button>
-            </div>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link to="/login" className="underline">
-              Sign in
-            </Link>
-          </div>
+    <div className="flex items-center justify-center py-12 mt-20">
+      <div className="mx-auto grid w-[350px] gap-6">
+        <div className="grid gap-2 text-center">
+          <h1 className="text-3xl font-bold">Sign Up</h1>
+          <p className="text-balance text-muted-foreground">
+            Enter your information to create an account
+          </p>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:block">
-        <LoginCircle value={"Sign Up"} />
+        <form action="" onSubmit={handleSubmit(signUp)}>
+          <div className="grid gap-4">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  placeholder="Ram Bahadur Basnet"
+                  required
+                  {...register("name", { required: true })}
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                {...register("email", { required: true })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                {...register("password", { required: true })}
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Create an account
+            </Button>
+            <Button variant="outline" className="w-full">
+              Sign up with Google
+            </Button>
+          </div>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link to="/login" className="underline">
+            Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );

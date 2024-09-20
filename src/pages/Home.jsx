@@ -1,30 +1,142 @@
-import { NewPostCard } from "@/components/NewPostCard";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Search } from "lucide-react";
 
-import { useEffect, useState } from "react";
-
-import { useDispatch, useSelector } from "react-redux";
-
-export const Home = () => {
-  const dispatch = useDispatch();
-  const [data, setData] = useState([]);
-  const posts = useSelector((state) => state.post.allPosts);
-  console.log(posts);
-
-  useEffect(() => {
-    if (posts) {
-      setData(posts.documents);
-    }
-  }, [dispatch, posts]);
-
-  console.log(data);
+export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
   return (
-    <>
-      <div className=" p-10  w-full min-h-screen flex flex-wrap items-center justify-center  gap-5 ">
-        {data &&
-          data?.map((post, index) => {
-            return <NewPostCard post={post} key={index} />;
-          })}
+    <Tabs
+      defaultValue={activeTab}
+      className="w-full space-y-8"
+      onValueChange={setActiveTab}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+        <TabsList className="bg-muted/60 p-1 rounded-lg">
+          <TabsTrigger value="home" className="rounded-md">
+            Home
+          </TabsTrigger>
+          <TabsTrigger value="trending" className="rounded-md">
+            Trending
+          </TabsTrigger>
+          <TabsTrigger value="latest" className="rounded-md">
+            Latest
+          </TabsTrigger>
+        </TabsList>
+        <div className="flex items-center space-x-2">
+          <Input
+            className="w-full sm:w-[300px]"
+            placeholder="Search posts..."
+            type="search"
+          />
+          <Button size="icon" variant="ghost">
+            <Search className="h-4 w-4" />
+            <span className="sr-only">Search</span>
+          </Button>
+        </div>
       </div>
-    </>
+      <TabsContent value="home" className="space-y-8">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.map((post) => (
+            <Card key={post.id} className="flex flex-col overflow-hidden">
+              <img
+                alt="Blog post image"
+                className="w-full h-48 object-cover"
+                src={post.image}
+              />
+              <div className="flex flex-col justify-between p-6 flex-grow">
+                <div>
+                  <CardHeader className="flex flex-row items-center gap-4 p-0 mb-4">
+                    <Avatar>
+                      <AvatarImage alt={post.author} src={post.avatar} />
+                      <AvatarFallback>{post.author[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <h3 className="font-semibold">{post.author}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {post.readTime}
+                      </p>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="grid gap-2 p-0">
+                    <h4 className="font-semibold text-xl">{post.title}</h4>
+                    <p className="text-sm text-muted-foreground line-clamp-3">
+                      {post.content}
+                    </p>
+                  </CardContent>
+                </div>
+                <CardFooter className="p-0 mt-4">
+                  <Button className="w-full" variant="outline">
+                    Read more
+                  </Button>
+                </CardFooter>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+      <TabsContent value="trending">
+        <h2 className="text-2xl font-bold mb-6">Trending Posts</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.slice(0, 3).map((post) => (
+            <Card key={post.id} className="flex flex-col">
+              <CardHeader>
+                <h3 className="text-lg font-semibold">{post.title}</h3>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {post.content}
+                </p>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <p className="text-sm text-muted-foreground">{post.readTime}</p>
+                <Button variant="ghost" size="sm">
+                  Read more
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+      <TabsContent value="latest">
+        <h2 className="text-2xl font-bold mb-6">Latest Posts</h2>
+        <div className="space-y-6">
+          {blogPosts.map((post) => (
+            <Card
+              key={post.id}
+              className="flex flex-col sm:flex-row overflow-hidden"
+            >
+              <img
+                alt="Blog post image"
+                className="w-full sm:w-48 h-48 object-cover"
+                src={post.image}
+              />
+              <div className="flex flex-col justify-between p-6 flex-grow">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {post.content}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-muted-foreground">
+                    {post.readTime}
+                  </p>
+                  <Button variant="ghost" size="sm">
+                    Read more
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+    </Tabs>
   );
-};
+}
