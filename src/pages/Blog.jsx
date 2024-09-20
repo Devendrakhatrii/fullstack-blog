@@ -8,24 +8,21 @@ import {
 } from "@/components/ui/card";
 import { Edit, Trash2, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import service from "@/appwrite/database";
+import { getPost } from "@/slices/postSlice";
+import { useSelector } from "react-redux";
 
 export default function BlogPage({ setCurrentPage, setEditingPost }) {
-  const [userPosts, setUserPosts] = useState([
-    {
-      id: 1,
-      title: "My First Blog Post",
-      content: "This is the content of my first blog post.",
-      date: "2023-05-15",
-      image: "/placeholder.svg?height=200&width=300",
-    },
-    {
-      id: 2,
-      title: "Reflections on Coding",
-      content: "Thoughts and experiences from my coding journey.",
-      date: "2023-05-20",
-      image: "/placeholder.svg?height=200&width=300",
-    },
-  ]);
+  const dispatch = useDispatch();
+
+  const [userPosts, setUserPosts] = useState([]);
+
+  const { $id, name } = useSelector((state) => state.auth?.userData);
+  console.log($id, name);
+  const posts = useSelector((state) => state.post.userPost);
+  console.log(posts);
 
   const handleDelete = (id) => {
     setUserPosts(userPosts.filter((post) => post.id !== id));
@@ -35,7 +32,10 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
     setEditingPost(post);
     setCurrentPage("editPost");
   };
-
+  useEffect(() => {
+    service.getPost($id).then((posts) => dispatch(getPost(posts)));
+    setUserPosts(posts.documents);
+  }, [dispatch, $id]);
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -62,7 +62,7 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
             <CardHeader>
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold">{post.title}</h3>
-                <p className="text-sm text-muted-foreground">{post.date}</p>
+                <p className="text-sm text-muted-foreground">{post.$createdAt}</p>
               </div>
             </CardHeader>
             <CardContent>
@@ -71,7 +71,7 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
               </p>
             </CardContent>
             <CardFooter className="flex justify-end space-x-2">
-              <Link to={`/edit-post/${post.id}`}>
+              <Link to={`/edit-post/${userPosts.id}`}>
                 <Button
                   variant="outline"
                   size="sm"
