@@ -126,7 +126,7 @@ export function NewPostCard({ post }) {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Post</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <Link to={`/editPost/${post.$id}`}>
+                  <Link to={`/edit-post/${post.$id}`}>
                     <DropdownMenuItem onClick={handleEdit}>
                       <Sheet asChild>
                         <SheetTrigger>Edit</SheetTrigger>

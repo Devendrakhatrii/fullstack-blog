@@ -63,6 +63,19 @@ export class Service {
       return false;
     }
   }
+
+  async post(postId) {
+    try {
+      return await this.databases.getDocument(
+        config.appwriteDatabaseId,
+        config.appwriteCollectionId,
+        postId
+      );
+    } catch (error) {
+      console.log("Appwrite serive :: getPost :: error", error);
+      return false;
+    }
+  }
   async getPost(userId) {
     try {
       return await this.databases.listDocuments(

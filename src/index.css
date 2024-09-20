@@ -63,9 +63,10 @@ html,
 body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Prevents scrolling */
+  overflow: hidden;
 }
 
-/* #root {
+#root {
   height: 100vh;
-  overflow: auto; /* Allows scrolling only when the user scrolls }*/
+  overflow: auto;
+}

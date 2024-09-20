@@ -15,8 +15,6 @@ import service from "@/appwrite/database";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { getPost, getPosts } from "@/slices/postSlice";
-import { NewPostCard } from "@/components/NewPostCard";
-import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
 const AddPost = () => {
@@ -147,6 +145,7 @@ const AddPost = () => {
 
           <div className=" flex items-center justify-between  w-full p-2 px-10 mt-10">
             <Button onClick={() => navigate(-1)}>Back</Button>
+
             <Button type="submit">Submit</Button>
           </div>
         </form>

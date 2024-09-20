@@ -58,8 +58,8 @@ function App() {
         {/*  private  routes*/}
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/profile" element={<Profile />} /> */}
-          <Route path="/addPost" element={<AddPost />} />
-          <Route path="/editPost/:id" element={<EditPost />} />
+          <Route path="/add-post" element={<AddPost />} />
+          <Route path="/edit-post/:id" element={<EditPost />} />
           <Route path="/home" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
         </Route>
