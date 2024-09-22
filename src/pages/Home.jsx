@@ -9,15 +9,29 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Search } from "lucide-react";
+import PostImage from "@/components/PostImage";
+import { useSelector } from "react-redux";
+import Loading from "@/components/Loading";
+import { useState, useEffect } from "react";
+export default function HomePage({ activeTab, setActiveTab }) {
+  const { allPosts, isLoading, error } = useSelector((state) => state.post);
+  const posts = allPosts?.documents || [];
+  const [search, setSearch] = useState("");
+  if (isLoading || !allPosts?.documents) {
+    return <Loading />;
+  }
 
-export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <Tabs
       defaultValue={activeTab}
       className="w-full space-y-8"
-      onValueChange={setActiveTab}
+      onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 sticky top-20 bg-white z-50 p-5 px-10 shadow-2xl rounded-full">
         <TabsList className="bg-muted/60 p-1 rounded-lg">
           <TabsTrigger value="home" className="rounded-md">
             Home
@@ -34,6 +48,7 @@ export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
             className="w-full sm:w-[300px]"
             placeholder="Search posts..."
             type="search"
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Button size="icon" variant="ghost">
             <Search className="h-4 w-4" />
@@ -43,24 +58,32 @@ export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
       </div>
       <TabsContent value="home" className="space-y-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post) => (
-            <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img
-                alt="Blog post image"
-                className="w-full h-48 object-cover"
-                src={post.image}
-              />
+          {posts?.map((post, index) => (
+            <Card
+              key={`${post.id}-${index}`}
+              className="flex flex-col overflow-hidden"
+            >
+              <PostImage post={post} />
               <div className="flex flex-col justify-between p-6 flex-grow">
                 <div>
-                  <CardHeader className="flex flex-row items-center gap-4 p-0 mb-4">
+                  <CardHeader className="flex flex-row items-center gap-4 p-0 mb-4 text-center">
                     <Avatar>
-                      <AvatarImage alt={post.author} src={post.avatar} />
-                      <AvatarFallback>{post.author[0]}</AvatarFallback>
+                      <AvatarImage
+                        alt={post.name.split(" ")[0]}
+                        src={post.avatar}
+                      />
+                      <AvatarFallback>
+                        {post.name.split(" ")[0][0] +
+                          post.name.split(" ")[1][0]}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
-                      <h3 className="font-semibold">{post.author}</h3>
+                      <h3 className="font-semibold">{post.name}</h3>
+                    </div>
+                    <div className="grid gap-1 ml-auto">
                       <p className="text-sm text-muted-foreground">
-                        {post.readTime}
+                        {Math.ceil(post.content.split(" ").length / 200)} min
+                        read
                       </p>
                     </div>
                   </CardHeader>
@@ -84,8 +107,11 @@ export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
       <TabsContent value="trending">
         <h2 className="text-2xl font-bold mb-6">Trending Posts</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.slice(0, 3).map((post) => (
-            <Card key={post.id} className="flex flex-col">
+          {posts.slice(0, 3).map((post, index) => (
+            <Card
+              key={`trending-${post.id}-${index}`}
+              className="flex flex-col"
+            >
               <CardHeader>
                 <h3 className="text-lg font-semibold">{post.title}</h3>
               </CardHeader>
@@ -107,9 +133,9 @@ export default function HomePage({ blogPosts, activeTab, setActiveTab }) {
       <TabsContent value="latest">
         <h2 className="text-2xl font-bold mb-6">Latest Posts</h2>
         <div className="space-y-6">
-          {blogPosts.map((post) => (
+          {posts.map((post, index) => (
             <Card
-              key={post.id}
+              key={`latest-${post.id}-${index}`}
               className="flex flex-col sm:flex-row overflow-hidden"
             >
               <img

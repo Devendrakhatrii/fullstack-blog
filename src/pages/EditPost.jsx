@@ -8,26 +8,44 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import service from "@/appwrite/database";
-import { getPost, getPosts } from "@/slices/postSlice";
+import { setPosts, setUserPosts } from "@/slices/postSlice";
+import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import PostImage from "@/components/PostImage";
 
-export default function AddEditPostPage({
-  setCurrentPage,
-  editingPost = null,
-}) {
-  const [slug, setSlug] = useState("");
-  const { register, handleSubmit, setValue, reset, watch } = useForm({
+export default function AddEditPostPage() {
+  const { id } = useParams();
+  const [post, setPost] = useState({});
+  console.log(id);
+  const { register, handleSubmit, setValue, reset } = useForm({
     defaultValues: {
       status: "true", // "true" will select the "Active" option by default
     },
   });
-  const selectedStatus = watch("status");
+
+  if (post) {
+    setValue("title", post.title);
+    setValue("slug", post.slug);
+    setValue("content", post.content);
+    setValue("image", post.image);
+  }
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { $id, name } = useSelector((state) => state.auth?.userData);
   console.log($id, name);
-  const posts = useSelector((state) => state.post.userPost);
-  console.log(posts);
+  const data = useSelector((state) => state.post?.allPosts?.documents);
+  console.log(data);
+
+  useEffect(() => {
+    if (data) {
+      const post = data.find((post) => post.$id === id);
+      setPost(post);
+      console.log(post);
+    } else {
+      console.log("data is undefined");
+    }
+  }, [data, id]);
 
   const addPost = async (data) => {
     console.log(data);
@@ -48,9 +66,8 @@ export default function AddEditPostPage({
 
       if (post) {
         reset();
-        setSlug("");
-        service.getPosts().then((posts) => dispatch(getPosts(posts)));
-        service.getPost().then((posts) => dispatch(getPost(posts)));
+        setValue("slug", "");
+        service.getPosts().then((posts) => dispatch(setPosts(posts)));
       }
     } catch (error) {
       console.log(error);
@@ -67,13 +84,32 @@ export default function AddEditPostPage({
   };
 
   const createSlug = (e) => {
-    let value = e.target.value.split(" ").join("-");
-    setSlug(value);
+    let value = e.target.value.toLowerCase().split(" ").join("-");
+    setValue("slug", value);
   };
 
-  useEffect(() => {
-    service.getPost($id).then((posts) => dispatch(getPost(posts)));
-  }, [dispatch, $id]);
+  const updatePost = async (data) => {
+    console.log(data);
+    try {
+      let imageId = null;
+      if (data.image && data.image[0]) {
+        const file = data?.image[0];
+        const deleteImage = await service.deleteFile(post.image);
+        console.log(deleteImage);
+        const image = await service.uploadFile(file);
+        imageId = image.$id || null;
+      }
+
+      const updateData = { ...data, image: imageId };
+      console.log(updateData);
+
+      const update = service.updatePost(updateData);
+      if (update) toast.success("Updated!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Couldn't update!");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -83,11 +119,13 @@ export default function AddEditPostPage({
           Back to Blog
         </Button>
         <h2 className="text-3xl font-bold">
-          {editingPost ? "Edit Post" : "Add New Post"}
+          {id ? "Edit Post" : "Add New Post"}
         </h2>
       </div>
       <Card>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={post ? handleSubmit(updatePost) : handleSubmit(onSubmit)}
+        >
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="title" className="text-sm font-medium">
@@ -109,7 +147,6 @@ export default function AddEditPostPage({
               <Input
                 label="Slug: "
                 type="text"
-                value={slug}
                 disabled
                 {...register("slug")}
               />
@@ -128,22 +165,18 @@ export default function AddEditPostPage({
               />
             </div>
             <div className="space-y-2">
+              <PostImage post={post} />
+            </div>
+            <div className="space-y-2">
               <label htmlFor="image" className="text-sm font-medium">
                 Image
               </label>
               <Input label="Image: " type="file" {...register("image")} />
             </div>
-            {/* {post.image && (
-              <img
-                src={post.image}
-                alt="Post preview"
-                className="w-full h-48 object-cover rounded-md"
-              />
-            )} */}
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full">
-              {editingPost ? "Update Post" : "Create Post"}
+              {id ? "Update Post" : "Create Post"}
             </Button>
           </CardFooter>
         </form>

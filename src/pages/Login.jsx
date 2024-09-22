@@ -35,9 +35,8 @@ export function Login() {
         const userData = await authService.checkCurrentUser();
 
         if (userData) dispatch(login(userData));
-        setTimeout(() => {
-          navigate("/home");
-        }, 2000);
+
+        navigate("/home");
       }
     } catch (error) {
       toast.error(error.message);

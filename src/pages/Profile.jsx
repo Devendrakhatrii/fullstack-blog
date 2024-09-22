@@ -8,12 +8,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
+import { useSelector } from "react-redux";
 export default function ProfilePage() {
+  const { userData } = useSelector((state) => state.auth);
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    bio: "Passionate blogger and tech enthusiast",
+    name: userData?.name,
+    email: userData?.email,
+    bio: userData?.bio,
   });
 
   const handleUpdate = (field, value) => {

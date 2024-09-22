@@ -75,18 +75,6 @@ export class Service {
       return false;
     }
   }
-  async getPost(userId) {
-    try {
-      return await this.databases.listDocuments(
-        config.appwriteDatabaseId,
-        config.appwriteCollectionId,
-        [Query.equal("id", userId)]
-      );
-    } catch (error) {
-      console.log("Appwrite serive :: getPost :: error", error);
-      return false;
-    }
-  }
   async getPosts() {
     try {
       return await this.databases.listDocuments(
@@ -111,6 +99,18 @@ export class Service {
       return false;
     }
   }
+  // async updateFile(fileId, file) {
+  //   try {
+  //     return await this.bucket.updateFile(
+  //       config.appwriteBucketId,
+  //       fileId,
+  //       file
+  //     );
+  //   } catch (error) {
+  //     console.log("Appwrite serive :: updateFile :: error", error);
+  //     return false;
+  //   }
+  // }
   async deleteFile(fileId) {
     try {
       await this.bucket.deleteFile(config.appwriteBucketId, fileId);
