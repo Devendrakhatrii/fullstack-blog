@@ -12,10 +12,13 @@ import { setPosts, setUserPosts } from "@/slices/postSlice";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import PostImage from "@/components/PostImage";
+import { setLoading } from "@/slices/postSlice";
+import Loading from "@/components/Loading";
 
 export default function AddEditPostPage() {
   const { id } = useParams();
   const [post, setPost] = useState({});
+  const [updateImage, setUpdateImage] = useState(false);
   console.log(id);
   const { register, handleSubmit, setValue, reset } = useForm({
     defaultValues: {
@@ -35,6 +38,7 @@ export default function AddEditPostPage() {
   const { $id, name } = useSelector((state) => state.auth?.userData);
   console.log($id, name);
   const data = useSelector((state) => state.post?.allPosts?.documents);
+
   console.log(data);
 
   useEffect(() => {
@@ -92,24 +96,40 @@ export default function AddEditPostPage() {
     console.log(data);
     try {
       let imageId = null;
-      if (data.image && data.image[0]) {
-        const file = data?.image[0];
+      if (post.image && data.image) {
+        console.log(post.image);
         const deleteImage = await service.deleteFile(post.image);
         console.log(deleteImage);
-        const image = await service.uploadFile(file);
-        imageId = image.$id || null;
       }
 
-      const updateData = { ...data, image: imageId };
+      if (data.image && data.image[0]) {
+        const file = data?.image[0];
+        const image = await service.uploadFile(file);
+        image ? setUpdateImage(true) : setUpdateImage(false);
+      }
+
+      const updateData = updateImage
+        ? { ...data, image: imageId }
+        : { ...data };
       console.log(updateData);
 
-      const update = service.updatePost(updateData);
-      if (update) toast.success("Updated!");
+      const update = service.updatePost(post.$id, updateData);
+
+      if (update) {
+        toast.success("Updated!");
+        service.getPosts((post) => {
+          dispatch(setLoading(true));
+          dispatch(setPosts(post));
+          dispatch(setLoading(false));
+        });
+      }
     } catch (error) {
       console.log(error);
       toast.error("Couldn't update!");
     }
   };
+
+  // if (loading || !allPosts || !data) return <Loading />;
 
   return (
     <div className="space-y-6">
@@ -122,7 +142,7 @@ export default function AddEditPostPage() {
           {id ? "Edit Post" : "Add New Post"}
         </h2>
       </div>
-      <Card>
+      <Card className="pt-4">
         <form
           onSubmit={post ? handleSubmit(updatePost) : handleSubmit(onSubmit)}
         >
@@ -164,9 +184,11 @@ export default function AddEditPostPage() {
                 rows={10}
               />
             </div>
-            <div className="space-y-2">
-              <PostImage post={post} />
-            </div>
+            {post?.image && (
+              <div className="space-y-2">
+                <PostImage post={post} />
+              </div>
+            )}
             <div className="space-y-2">
               <label htmlFor="image" className="text-sm font-medium">
                 Image

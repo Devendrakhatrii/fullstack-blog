@@ -32,7 +32,7 @@ export class Service {
       console.log("Appwrite serive :: createPost :: error", error);
     }
   }
-  async updatePost(id, { title, content, image, status }) {
+  async updatePost(id, { title, content, image }) {
     try {
       return await this.databases.updateDocument(
         config.appwriteDatabaseId,
@@ -42,7 +42,6 @@ export class Service {
           title,
           content,
           image,
-          status,
         }
       );
     } catch (error) {
@@ -99,18 +98,7 @@ export class Service {
       return false;
     }
   }
-  // async updateFile(fileId, file) {
-  //   try {
-  //     return await this.bucket.updateFile(
-  //       config.appwriteBucketId,
-  //       fileId,
-  //       file
-  //     );
-  //   } catch (error) {
-  //     console.log("Appwrite serive :: updateFile :: error", error);
-  //     return false;
-  //   }
-  // }
+
   async deleteFile(fileId) {
     try {
       await this.bucket.deleteFile(config.appwriteBucketId, fileId);

@@ -13,6 +13,7 @@ import PostImage from "@/components/PostImage";
 import { useSelector } from "react-redux";
 import Loading from "@/components/Loading";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 export default function HomePage({ activeTab, setActiveTab }) {
   const { allPosts, isLoading, error } = useSelector((state) => state.post);
   const posts = allPosts?.documents || [];
@@ -95,9 +96,11 @@ export default function HomePage({ activeTab, setActiveTab }) {
                   </CardContent>
                 </div>
                 <CardFooter className="p-0 mt-4">
-                  <Button className="w-full" variant="outline">
-                    Read more
-                  </Button>
+                  <Link to={`/blog-detail/${post.$id}`} className="w-full">
+                    <Button className="w-full" variant="outline">
+                      Read more
+                    </Button>
+                  </Link>
                 </CardFooter>
               </div>
             </Card>
@@ -122,9 +125,11 @@ export default function HomePage({ activeTab, setActiveTab }) {
               </CardContent>
               <CardFooter className="flex justify-between">
                 <p className="text-sm text-muted-foreground">{post.readTime}</p>
-                <Button variant="ghost" size="sm">
-                  Read more
-                </Button>
+                <Link to={`/blog-detail/${post.$id}`}>
+                  <Button variant="ghost" size="sm">
+                    Read more
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}
@@ -136,13 +141,16 @@ export default function HomePage({ activeTab, setActiveTab }) {
           {posts.map((post, index) => (
             <Card
               key={`latest-${post.id}-${index}`}
-              className="flex flex-col sm:flex-row overflow-hidden"
+              className="flex flex-col sm:flex-row overflow-hidden justify-between"
             >
-              <img
+              {/* <img
                 alt="Blog post image"
                 className="w-full sm:w-48 h-48 object-cover"
                 src={post.image}
-              />
+              /> */}
+              <div className="w-full sm:w-48 h-48 size-48 object-contain">
+                <PostImage post={post} />
+              </div>
               <div className="flex flex-col justify-between p-6 flex-grow">
                 <div>
                   <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
@@ -154,9 +162,11 @@ export default function HomePage({ activeTab, setActiveTab }) {
                   <p className="text-sm text-muted-foreground">
                     {post.readTime}
                   </p>
-                  <Button variant="ghost" size="sm">
-                    Read more
-                  </Button>
+                  <Link to={`/blog-detail/${post.$id}`}>
+                    <Button variant="ghost" size="sm">
+                      Read more
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>

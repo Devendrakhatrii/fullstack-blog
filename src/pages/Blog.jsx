@@ -27,7 +27,7 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
       );
       setPosts(filteredPosts);
     }
-  }, [userData, allPosts]);
+  }, [userData, allPosts, isLoading]);
 
   const handleDelete = async (id) => {
     try {

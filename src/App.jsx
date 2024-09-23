@@ -1,12 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./slices/authSlice";
-import {
-  setLoading,
-  setPosts,
-  setError,
-  setUserPosts,
-} from "./slices/postSlice";
+import { setLoading, setPosts, setError } from "./slices/postSlice";
 import authService from "./appwrite/auth";
 import { Route, Routes } from "react-router-dom";
 import { Login } from "./pages/Login";
@@ -23,6 +18,7 @@ import { useState } from "react";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store"; // Update this import
 import Loading from "./components/Loading";
+import BlogDetail from "./pages/BlogDetail";
 function App() {
   const [activeTab, setActiveTab] = useState("home");
   const [userId, setUserId] = useState("");
@@ -57,7 +53,11 @@ function App() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (userCheckComplete && (!allPosts || allPosts.length === 0) && !isLoading) {
+      if (
+        userCheckComplete &&
+        (!allPosts || allPosts.length === 0) &&
+        !isLoading
+      ) {
         dispatch(setLoading(true));
         try {
           const posts = await service.getPosts();
@@ -90,6 +90,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/profile" element={<Profile />} /> */}
           <Route path="/add-post" element={<AddEditPostPage />} />
+          <Route path="/blog-detail/:id" element={<BlogDetail />} />
           <Route path="/edit-post/:id" element={<AddEditPostPage />} />
           <Route
             path="/home"

@@ -5,22 +5,22 @@ const PostImage = ({ post }) => {
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
     const fetchImage = async () => {
-      let imageid = post.image || null;
+      let imageid = post?.image || null;
 
       if (imageid) {
         const data = await service.filePreview(imageid);
 
         if (data) {
-          setImageUrl(data.href);
+          setImageUrl(data?.href);
         }
       }
     };
     fetchImage();
-  }, [post.image]);
+  }, [post?.image]);
   return (
     <img
       src={imageUrl}
-      alt={post.title}
+      alt={post?.title}
       className="w-full h-48 object-cover aspect-square"
     />
   );
