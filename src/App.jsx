@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "./slices/authSlice";
-import { setLoading, setPosts, setError } from "./slices/postSlice";
+import { login, logout, authLoading } from "./slices/authSlice";
 import authService from "./appwrite/auth";
 import { Route, Routes } from "react-router-dom";
 import { Login } from "./pages/Login";
@@ -16,66 +15,54 @@ import BlogPage from "./pages/Blog";
 import ProfilePage from "./pages/Profile";
 import { useState } from "react";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./store/store"; // Update this import
+import { persistor } from "./store/store"; // Update this import
 import Loading from "./components/Loading";
 import BlogDetail from "./pages/BlogDetail";
+import { setPosts, postLoading } from "@/slices/postSlice";
+
 function App() {
   const [activeTab, setActiveTab] = useState("home");
-  const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
-  const { allPosts, isLoading } = useSelector((state) => state.post);
-  const [userCheckComplete, setUserCheckComplete] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const { isLoadingAuth } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    const fetchPosts = async () => {
+      dispatch(postLoading(true));
+      const posts = await service.getPosts();
+      dispatch(setPosts(posts));
+      dispatch(postLoading(false));
+    };
     const checkUserSession = async () => {
-      setIsCheckingAuth(true);
       try {
+        dispatch(authLoading(true));
         const user = await authService.checkCurrentUser();
         console.log("Current user:", user);
         if (user) {
-          setUserId(user.$id);
           dispatch(login(user));
+          dispatch(authLoading(false));
+          fetchPosts();
         } else {
           dispatch(logout());
         }
       } catch (error) {
         console.error("Error checking user session:", error);
         dispatch(logout());
+        dispatch(authLoading(false));
       } finally {
-        setIsCheckingAuth(false);
-        setUserCheckComplete(true);
+        dispatch(postLoading(false));
+        dispatch(authLoading(false));
       }
     };
 
     checkUserSession();
   }, [dispatch]);
 
-  useEffect(() => {
+  if (isLoadingAuth) {
     const fetchPosts = async () => {
-      if (
-        userCheckComplete &&
-        (!allPosts || allPosts.length === 0) &&
-        !isLoading
-      ) {
-        dispatch(setLoading(true));
-        try {
-          const posts = await service.getPosts();
-          dispatch(setPosts(posts));
-          console.log(posts);
-        } catch (error) {
-          console.error("Error fetching posts:", error);
-          dispatch(setError(error.message));
-        } finally {
-          dispatch(setLoading(false));
-        }
-      }
+      const posts = await service.getPosts();
+      dispatch(setPosts(posts));
     };
-
     fetchPosts();
-  }, [dispatch, allPosts, isLoading, userCheckComplete, userId]);
-
-  if (isCheckingAuth) {
     return <Loading />; // Or a proper loading component
   }
 

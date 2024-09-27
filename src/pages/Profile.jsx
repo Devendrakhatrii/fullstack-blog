@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 export default function ProfilePage() {
   const { userData } = useSelector((state) => state.auth);
+  console.log(userData);
   const [profile, setProfile] = useState({
     name: userData?.name,
     email: userData?.email,
@@ -43,16 +44,25 @@ export default function ProfilePage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Bio</label>
-          <Textarea
-            value={profile.bio}
-            onChange={(e) => handleUpdate("bio", e.target.value)}
-            rows={4}
-          />
+          <label className="block text-sm font-medium mb-1">Status</label>
+          {userData.status ? "true" : "false"}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Created</label>
+          {new Date(userData.$createdAt).toLocaleDateString()}
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Email verified
+          </label>
+          {userData.$verified ? "Yes" : "No"}
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Update Profile</Button>
+        <Button className="w-full " disabled>
+          Update Profile
+        </Button>
       </CardFooter>
     </Card>
   );

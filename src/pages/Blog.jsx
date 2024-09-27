@@ -15,7 +15,7 @@ import Loading from "@/components/Loading";
 import service from "@/appwrite/database";
 import { toast } from "react-hot-toast";
 
-export default function BlogPage({ setCurrentPage, setEditingPost }) {
+export default function BlogPage() {
   const { allPosts, isLoading, error } = useSelector((state) => state.post);
   const { userData } = useSelector((state) => state.auth);
   const [posts, setPosts] = useState([]);
@@ -41,11 +41,6 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
     }
   };
 
-  const handleEdit = (post) => {
-    setEditingPost(post);
-    setCurrentPage("editPost");
-  };
-
   if (isLoading || !allPosts?.documents) {
     return <Loading />;
   }
@@ -66,7 +61,7 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
           </p>
         </div>
         <Link to="/add-post">
-          <Button onClick={() => setCurrentPage("addPost")}>
+          <Button>
             <Plus className="mr-2 h-4 w-4" /> New Post
           </Button>
         </Link>
@@ -89,8 +84,8 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
                 {post.content}
               </p>
             </CardContent>
-            <CardFooter className="flex gap-5 justify-between space-x-2">
-              <div className="flex gap-5">
+            <CardFooter className="flex gap-5 md:flex-row flex-col justify-between space-x-2">
+              <div className="flex md:gap-5 gap-3 flex-wrap">
                 <p className="text-sm text-muted-foreground ">
                   Created: {new Date(post.$createdAt).toLocaleDateString()}
                 </p>
@@ -98,14 +93,10 @@ export default function BlogPage({ setCurrentPage, setEditingPost }) {
                   Updated: {formatTimeAgo(post.$updatedAt)}
                 </p>
               </div>
-              <div className="flex gap-5 items-center justify-between">
+              <div className="w-full flex md:gap-5 px-5 items-center justify-between">
                 <Link to={`/edit-post/${post.$id}`}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(post)}
-                  >
-                    <Edit className="mr-2 h-4 w-4" /> Edit
+                  <Button variant="outline" size="sm">
+                    <Edit className="md:mr-2 h-4 w-4" /> Edit
                   </Button>
                 </Link>
                 <Button

@@ -8,16 +8,17 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import service from "@/appwrite/database";
-import { setPosts, setUserPosts } from "@/slices/postSlice";
+import { setPosts } from "@/slices/postSlice";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import PostImage from "@/components/PostImage";
-import { setLoading } from "@/slices/postSlice";
+import { postLoading } from "@/slices/postSlice";
 import Loading from "@/components/Loading";
 
 export default function AddEditPostPage() {
   const { id } = useParams();
   const [post, setPost] = useState({});
+  const [imageId, setImageId] = useState(null);
   const [updateImage, setUpdateImage] = useState(false);
   console.log(id);
   const { register, handleSubmit, setValue, reset } = useForm({
@@ -30,7 +31,6 @@ export default function AddEditPostPage() {
     setValue("title", post.title);
     setValue("slug", post.slug);
     setValue("content", post.content);
-    setValue("image", post.image);
   }
 
   const dispatch = useDispatch();
@@ -94,33 +94,37 @@ export default function AddEditPostPage() {
 
   const updatePost = async (data) => {
     console.log(data);
+
     try {
-      let imageId = null;
-      if (post.image && data.image) {
-        console.log(post.image);
-        const deleteImage = await service.deleteFile(post.image);
-        console.log(deleteImage);
-      }
+      let newImageId = post.image; // Default to the existing image
 
+      // Only delete and upload a new image if a new file is provided
       if (data.image && data.image[0]) {
-        const file = data?.image[0];
+        // Delete the old image if it exists
+        if (post.image) {
+          const deleted = await service.deleteFile(post.image);
+          console.log("deleted", deleted);
+        }
+
+        // Upload the new image
+        const file = data.image[0];
         const image = await service.uploadFile(file);
-        image ? setUpdateImage(true) : setUpdateImage(false);
+        console.log("image", image);
+        newImageId = image.$id;
       }
 
-      const updateData = updateImage
-        ? { ...data, image: imageId }
-        : { ...data };
-      console.log(updateData);
+      // Always update with the newImageId (which could be the old image id if no new image was uploaded)
+      const updateData = { ...data, image: newImageId };
+      console.log("updateData", updateData);
 
-      const update = service.updatePost(post.$id, updateData);
+      const update = await service.updatePost(post.$id, updateData);
 
       if (update) {
         toast.success("Updated!");
-        service.getPosts((post) => {
-          dispatch(setLoading(true));
-          dispatch(setPosts(post));
-          dispatch(setLoading(false));
+        service.getPosts((posts) => {
+          dispatch(postLoading(true));
+          dispatch(setPosts(posts));
+          dispatch(postLoading(false));
         });
       }
     } catch (error) {
@@ -138,7 +142,7 @@ export default function AddEditPostPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Blog
         </Button>
-        <h2 className="text-3xl font-bold">
+        <h2 className="md:text-3xl text-xl font-bold">
           {id ? "Edit Post" : "Add New Post"}
         </h2>
       </div>

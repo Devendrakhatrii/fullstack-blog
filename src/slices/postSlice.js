@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  allPosts: [],
-  isLoading: false,
+  allPosts: null,
+  isLoadingPosts: false,
   error: null,
 };
 
@@ -10,7 +10,7 @@ const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    setLoading: (state, action) => {
+    postLoading: (state, action) => {
       state.isLoading = action.payload;
     },
     setPosts: (state, action) => {
@@ -24,7 +24,6 @@ const postSlice = createSlice({
   },
 });
 
-export const { setLoading, setPosts, setUserPosts, setError } =
-  postSlice.actions;
+export const { postLoading, setPosts, setError } = postSlice.actions;
 
 export const postReducers = postSlice.reducer;

@@ -12,12 +12,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PostImage from "@/components/PostImage";
 import Loading from "@/components/Loading";
-import service from "@/appwrite/database";
-import { useDispatch } from "react-redux";
-import { setPosts } from "@/slices/postSlice";
+// import service from "@/appwrite/database";
+// import { useDispatch } from "react-redux";
+// import { setPosts } from "@/slices/postSlice";
 
-export default function BlogDetail({ setCurrentPage, postId }) {
-  const dispatch = useDispatch();
+export default function BlogDetail() {
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -27,7 +27,7 @@ export default function BlogDetail({ setCurrentPage, postId }) {
   const post = allPosts?.documents?.find((post) => post.$id === id);
   console.log(post);
 
-  const [isLiked, setIsLiked] = useState(false);
+  // const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = () => {
     // setIsLiked(!isLiked);
@@ -50,7 +50,7 @@ export default function BlogDetail({ setCurrentPage, postId }) {
       <Card className="overflow-hidden ">
         <PostImage post={post} />
         <CardHeader>
-          <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+          <h1 className="md:text-3xl text-xl font-bold mb-2">{post.title}</h1>
           <div className="flex items-center space-x-4">
             <Avatar>
               <AvatarImage src={post} alt={post.author} />
@@ -61,7 +61,7 @@ export default function BlogDetail({ setCurrentPage, postId }) {
             <div>
               <p className="font-semibold">{post.name}</p>
               <p className="text-sm text-muted-foreground">
-                {post.$createdAt.split("T")[0]}
+                {post?.$createdAt.split("T")[0]}
               </p>
             </div>
           </div>
@@ -79,15 +79,14 @@ export default function BlogDetail({ setCurrentPage, postId }) {
           <div className="flex space-x-4">
             <Button variant="ghost" onClick={handleLike}>
               <Heart
-                className={`mr-2 h-4 w-4 ${
-                  isLiked ? "fill-current text-red-500" : ""
-                }`}
+                className={`mr-2 h-4 w-4
+                `}
               />
-              {post.likes}
+              {/* {post?.likes} */}
             </Button>
             <Button variant="ghost">
               <MessageCircle className="mr-2 h-4 w-4" />
-              {post.comments}
+              {/* {post.comments} */}
             </Button>
           </div>
           <Button variant="ghost">

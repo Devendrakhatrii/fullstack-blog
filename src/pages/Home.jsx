@@ -12,13 +12,13 @@ import { Search } from "lucide-react";
 import PostImage from "@/components/PostImage";
 import { useSelector } from "react-redux";
 import Loading from "@/components/Loading";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
 export default function HomePage({ activeTab, setActiveTab }) {
   const { allPosts, isLoading, error } = useSelector((state) => state.post);
   const posts = allPosts?.documents || [];
-  const [search, setSearch] = useState("");
-  if (isLoading || !allPosts?.documents) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -32,7 +32,7 @@ export default function HomePage({ activeTab, setActiveTab }) {
       className="w-full space-y-8"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 sticky top-20 bg-white z-50 p-5 px-10 shadow-2xl rounded-full">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 sticky top-20 bg-white z-50 p-5 px-6 shadow-2xl rounded-full">
         <TabsList className="bg-muted/60 p-1 rounded-lg">
           <TabsTrigger value="home" className="rounded-md">
             Home
@@ -44,30 +44,18 @@ export default function HomePage({ activeTab, setActiveTab }) {
             Latest
           </TabsTrigger>
         </TabsList>
-        <div className="flex items-center space-x-2">
-          <Input
-            className="w-full sm:w-[300px]"
-            placeholder="Search posts..."
-            type="search"
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Button size="icon" variant="ghost">
-            <Search className="h-4 w-4" />
-            <span className="sr-only">Search</span>
-          </Button>
-        </div>
       </div>
       <TabsContent value="home" className="space-y-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {posts?.map((post, index) => (
             <Card
               key={`${post.id}-${index}`}
-              className="flex flex-col overflow-hidden"
+              className="flex flex-col overflow-hidden "
             >
               <PostImage post={post} />
               <div className="flex flex-col justify-between p-6 flex-grow">
                 <div>
-                  <CardHeader className="flex flex-row items-center gap-4 p-0 mb-4 text-center">
+                  <CardHeader className="flex flex-row  gap-2 md:gap-4 p-0  md:mb-4 text-center relative">
                     <Avatar>
                       <AvatarImage
                         alt={post.name.split(" ")[0]}
@@ -79,16 +67,16 @@ export default function HomePage({ activeTab, setActiveTab }) {
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
-                      <h3 className="font-semibold">{post.name}</h3>
+                      <h3 className="font-semibold text-center">{post.name}</h3>
                     </div>
-                    <div className="grid gap-1 ml-auto">
+                    <div className="grid gap-1 ml-auto absolute  top-5 left-12 md:left-14 ">
                       <p className="text-sm text-muted-foreground">
                         {Math.ceil(post.content.split(" ").length / 200)} min
                         read
                       </p>
                     </div>
                   </CardHeader>
-                  <CardContent className="grid gap-2 p-0">
+                  <CardContent className="grid gap-2 p-0 mt-4">
                     <h4 className="font-semibold text-xl">{post.title}</h4>
                     <p className="text-sm text-muted-foreground line-clamp-3">
                       {post.content}
@@ -141,14 +129,9 @@ export default function HomePage({ activeTab, setActiveTab }) {
           {posts.map((post, index) => (
             <Card
               key={`latest-${post.id}-${index}`}
-              className="flex flex-col sm:flex-row overflow-hidden justify-between"
+              className="flex flex-col sm:flex-row overflow-hidden gap-4 justify-between"
             >
-              {/* <img
-                alt="Blog post image"
-                className="w-full sm:w-48 h-48 object-cover"
-                src={post.image}
-              /> */}
-              <div className="w-full sm:w-48 h-48 size-48 object-contain">
+              <div className="size-80  h-40 aspect-video object-contain bg-red-500">
                 <PostImage post={post} />
               </div>
               <div className="flex flex-col justify-between p-6 flex-grow">

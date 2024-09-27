@@ -4,9 +4,9 @@ import Footer from "./footer/Footer";
 import Header from "./header/Header";
 import Loading from "./Loading";
 const ProtectedRoute = ({ children }) => {
-  const { authStatus, isCheckingAuth } = useSelector((state) => state.auth);
+  const { authStatus, loading } = useSelector((state) => state.auth);
 
-  if (isCheckingAuth) {
+  if (loading) {
     return <Loading />; // Or a proper loading component
   }
 
