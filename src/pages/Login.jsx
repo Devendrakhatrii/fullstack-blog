@@ -8,6 +8,7 @@ import { login } from "@/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import service from "@/appwrite/database";
 
 export function Login() {
   const navigate = useNavigate();
@@ -34,9 +35,11 @@ export function Login() {
       if (session) {
         const userData = await authService.checkCurrentUser();
 
-        if (userData) dispatch(login(userData));
+        if (userData) {
+          dispatch(login(userData));
+        }
 
-        navigate("/home");
+        navigate("/");
       }
     } catch (error) {
       toast.error(error.message);
@@ -94,9 +97,9 @@ export function Login() {
             <Button type="submit" className="w-full">
               Login
             </Button>
-            <Button variant="outline" className="w-full">
+            {/* <Button variant="outline" className="w-full">
               Login with Google
-            </Button>
+            </Button> */}
           </div>
         </form>
         <div className="mt-4 text-center text-sm">

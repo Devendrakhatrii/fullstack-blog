@@ -1,8 +1,16 @@
 import ShimmerButton from "@/components/magicui/shimmer-button";
 import RetroGrid from "@/components/magicui/retro-grid";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const isLoggedIn = useSelector((state) => state.auth.authStatus);
+  const navigate = useNavigate();
+  useEffect(() => {
+    isLoggedIn ? navigate("/home") : null;
+  }, [isLoggedIn, navigate]);
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
       <RetroGrid />

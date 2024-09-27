@@ -13,11 +13,26 @@ import PostImage from "@/components/PostImage";
 import { useSelector } from "react-redux";
 import Loading from "@/components/Loading";
 import { Link } from "react-router-dom";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { postLoading, setPosts } from "@/slices/postSlice";
+import service from "@/appwrite/database";
 
 export default function HomePage({ activeTab, setActiveTab }) {
   const { allPosts, isLoading, error } = useSelector((state) => state.post);
   const posts = allPosts?.documents || [];
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      dispatch(postLoading(true));
+      const posts = await service.getPosts();
+      dispatch(setPosts(posts));
+      dispatch(postLoading(false));
+    };
+    fetchPosts();
+  }, [dispatch]);
+
   if (isLoading) {
     return <Loading />;
   }
