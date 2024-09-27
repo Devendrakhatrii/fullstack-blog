@@ -84,8 +84,8 @@ export default function BlogPage() {
                 {post.content}
               </p>
             </CardContent>
-            <CardFooter className="flex gap-5 md:flex-row flex-col justify-between space-x-2">
-              <div className="flex md:gap-5 gap-3 flex-wrap">
+            <CardFooter className="flex gap-5 flex-col justify-between space-x-2">
+              <div className="flex w-full md:gap-5 gap-3 justify-evenly md:justify-between md:px-10">
                 <p className="text-sm text-muted-foreground ">
                   Created: {new Date(post.$createdAt).toLocaleDateString()}
                 </p>
