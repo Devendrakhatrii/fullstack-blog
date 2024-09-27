@@ -13,17 +13,18 @@ export class Service {
     this.databases = new Databases(this.client);
     this.bucket = new Storage(this.client);
   }
-  async createPost({ title, slug, content, image, status, id }) {
+  async createPost({ title, name, slug, content, image, id }) {
     try {
       return await this.databases.createDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug,
+        ID.unique(),
         {
+          slug,
+          name,
           title,
           content,
           image,
-          status,
           id,
         }
       );
@@ -31,30 +32,29 @@ export class Service {
       console.log("Appwrite serive :: createPost :: error", error);
     }
   }
-  async updatePost(slug, { title, content, image, status, id }) {
+  async updatePost(id, { title, content, image, slug }) {
     try {
       return await this.databases.updateDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug,
+        id,
         {
           title,
           content,
           image,
-          status,
-          id,
+          slug,
         }
       );
     } catch (error) {
       console.log("Appwrite serive :: updatePost :: error", error);
     }
   }
-  async deleteDocument(slug) {
+  async deleteDocument(id) {
     try {
       await this.databases.deleteDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug
+        id
       );
       return true;
     } catch (error) {
@@ -62,12 +62,13 @@ export class Service {
       return false;
     }
   }
-  async getPost(slug) {
+
+  async post(postId) {
     try {
       return await this.databases.getDocument(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
-        slug
+        postId
       );
     } catch (error) {
       console.log("Appwrite serive :: getPost :: error", error);
@@ -98,10 +99,10 @@ export class Service {
       return false;
     }
   }
+
   async deleteFile(fileId) {
     try {
-      await this.bucket.deleteFile(config.appwriteBucketId, fileId);
-      return true;
+      return await this.bucket.deleteFile(config.appwriteBucketId, fileId);
     } catch (error) {
       console.log("Appwrite serive :: deleteFile :: error", error);
       return false;
